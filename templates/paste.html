@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<head>
+    <title>Darkpaste</title>
+	<link rel="stylesheet" href="../static/styles.css">
+</head>
+<body>
+    <center>
+        <form action="{{ url_for('create_paste') }}" method="post">
+            <h2>Title</h2>
+            <input type="text" id="title" name="title">
+            <h3>Content</h3>
+            <textarea id="content" name="content" rows="40" cols="50"></textarea>
+            <br>
+            <input type="submit" value="Submit">
+        </form>
+    </center>
+</body>
