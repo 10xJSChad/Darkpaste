@@ -6,6 +6,22 @@
 <body>
     <center>
              <h2>{{content[0][0]}}</h2>
-             <p>{{content[0][1] | safe }}</p>
+			 <a href="../user/{{content[0][2]}}">By {{content[0][2]}}</a>
+			 <div class="pasteBox" style="width: 1000px">
+				<pre style="text-align: left; ">{{content[0][1]}}</pre>
+			 </div>
     </center>
 </body>
+
+<style>
+	pre {
+		overflow-x: auto;
+		white-space: pre-wrap;
+		word-wrap: break-word;
+	}
+	.pasteBox{
+		outline: 1px solid red;
+		outline-color: rgb(0, 255, 0);
+		padding: 10px;
+	}
+</style>
