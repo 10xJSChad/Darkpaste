@@ -1,0 +1,2 @@
+enableRegistration = True
+passwordSalt = "salty!"

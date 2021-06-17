@@ -9,7 +9,11 @@
             <h2>Darkpaste by 10xJSChad</h2>
 			
             {% for x in range(1, length) %}           
-             <a href="/pastes/{{urls[-x]}}">{{titles[-x]}}</a> <br>
+             <a href="/pastes/{{urls[-x]}}">{{titles[-x]}}</a> 
+			 {% if isOwner %}      
+			 <a href="/edit/{{urls[-x]}}">Edit</a> <a href="/delete/{{urls[-x]}}">Delete</a>
+			 {% endif %}
+			 <br>
             {% endfor %}
 
             {% if (length == 0) %}
@@ -17,7 +21,11 @@
             {% endif %}
 
             {% if (length > 0) %}
-            <a href="/pastes/{{urls[0]}}">{{titles[0]}}</a> <br>
+             <a href="/pastes/{{urls[0]}}">{{titles[0]}}</a> 
+			 {% if isOwner %}      
+			 <a href="/edit/{{urls[0]}}">Edit</a> <a href="/delete/{{urls[0]}}">Delete</a>
+			 {% endif %}
+			 <br>
             {% endif %}
 
             <input type="button" onclick="location.href='/';" value="Index" />

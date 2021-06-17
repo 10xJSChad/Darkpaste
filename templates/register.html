@@ -1,0 +1,22 @@
+<head>
+        <title>Darkpaste</title>
+            <link rel="stylesheet" href="../static/styles.css">
+</head>
+<body style="margin: auto; max-width: 500px;">
+		<center>
+			<h1>Darkpaste Registration</h1>
+        <form action="handle_registration" method="post" style="align-left";>
+				<label for="user"> Username </label>
+                <input type="text" name="user" value="">
+        </br>
+		
+				<label for="pass"> Password </label>
+                <input type="password" name="pass">
+
+        </br>
+                <input type="submit">
+        </form>
+		<h2>{{error}}</h2>
+		<h2>Once you have registered, you can not change your password!</h2>
+		</center>
+</body>

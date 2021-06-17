@@ -3,7 +3,10 @@ from flask import render_template
 from flask import request
 from flask import make_response
 from AnaDB import AnaDatabase
+import Registration
+import Config
 import random
+import os
 
 app = Flask(__name__)
 darkpaste = AnaDatabase("Darkpaste")
@@ -54,7 +57,8 @@ def checkLoggedGetUser():
 
 def verifyLogin(username, password):
  global darkpaste
- result = darkpaste.getWhere("users", "user=" + username, "select=pass")
+ password = Registration.hash(password)
+ result = darkpaste.getWhere("users", "user=" + username.lower(), "select=pass")
  if len(result) == 0: return False
  if result[0][0] == password: return True
 
@@ -72,6 +76,54 @@ def handle_login():
      return resp         
     return render_template('login.html')
 
+@app.route("/handle_registration", methods=['POST'])
+def handle_registration():
+    global darkpaste
+    if Config.enableRegistration == False:
+        return(index())
+        
+    username, password = request.values.get('user'), request.values.get('pass')
+    result = Registration.register(username, password)
+    if(result[0] == False): 
+        return render_template('register.html', error=result[1])
+    else: darkpaste.load(); return render_template('login.html');
+
+@app.route("/edit/<url>")
+def edit(url):
+    global darkpaste
+    viewingUser = checkLoggedGetUser()[1]
+    isOwner = False
+    
+    content = (darkpaste.getWhere("pastes", "url=" + url, "select=name,content,poster,type,url"))
+    privateContent = [["You do not own this paste", "Only the owner of this paste can edit it", content[0][2]]]
+    if content[0][2] == viewingUser: isOwner = True
+    
+    if (isOwner == False):
+     return render_template("paste/paste.html", content=privateContent)
+ 
+    return render_template("editPaste.html", content=content)
+
+
+@app.route("/delete/<url>")
+def deletion(url):
+    global darkpaste
+    viewingUser = checkLoggedGetUser()[1]
+    isOwner = False
+    
+    content = (darkpaste.getWhere("pastes", "url=" + url, "select=name,content,poster,type"))
+    
+    deleteContent = [["Paste Deleted", "Paste successfully deleted", content[0][2]]]
+    privateContent = [["You do not own this paste", "Only the owner of this paste can delete it", content[0][2]]]
+    
+    if content[0][2] == viewingUser: isOwner = True
+    
+    if (isOwner == False):
+     return render_template("paste/paste.html", content=privateContent)
+ 
+    darkpaste.removeWhere("pastes", "url=" + url)
+    darkpaste.save()
+    return render_template("paste/paste.html", content=deleteContent)
+
 def generateUrl():
  chars = "ABCDEFGHIJKLMNOPQRSTUVXYZabcdefhijklmnopqrstuvxyz1234567890"
  url = ""
@@ -82,6 +134,12 @@ def generateUrl():
 @app.route("/login")
 def login():
     return render_template('login.html')
+
+@app.route("/register")
+def register():
+    if Config.enableRegistration == False:
+        return(index())
+    return render_template('register.html')
 
 @app.route("/pastes/<url>")
 def paste(url):
@@ -105,6 +163,7 @@ def user(url):
     urls = (darkpaste.getWhere("pastes", "poster=" + url, "select=url,type"))
     titles = (darkpaste.getWhere("pastes", "poster=" + url, "select=name,type"))
     posters = (darkpaste.getWhere("pastes", "poster=" + url, "select=poster,type"))
+    isOwner = False
     
     newUrls = []
     newTitles = []
@@ -119,6 +178,7 @@ def user(url):
          if x[1] == "public": newPosters.append(x[0]) 
          
     else:
+     isOwner = True
      for x in urls: 
          newUrls.append(x[0])   
      for x in titles: 
@@ -131,7 +191,7 @@ def user(url):
     posters = newPosters   
     
     length = len(urls)
-    return render_template('user/user.html', titles=titles, urls=urls, length=length, posters=posters)
+    return render_template('user/user.html', titles=titles, urls=urls, length=length, posters=posters, isOwner=isOwner)
 
 @app.route("/")
 def index():
@@ -143,12 +203,31 @@ def index():
     posters = (darkpaste.getWhere("pastes", "type=public", "select=poster"))
     if len(urls) < 11: length = len(urls)
     else: length = 11
-    return render_template('main.html', titles=titles, urls=urls, length=length, posters=posters, username=username)
+    return render_template('main.html', titles=titles, urls=urls, length=length, posters=posters, username=username, loggedIn = checkLogged(), registrationEnabled = Config.enableRegistration)
 
 @app.route("/paste")
 def pastePage():
     if not checkLogged(): return render_template('notlogged.html')
     return render_template('paste.html')
+
+@app.route('/update_paste', methods=['POST'])
+def update_paste():
+    username = getUser()
+    title, content, pasteType, url = request.values.get('title'), request.values.get('content'), request.values.get('pasteType'), request.values.get('url')
+    fixedPasteType = "public"
+    
+    loggedUser = checkLoggedGetUser()[1]
+    pasteOwner = darkpaste.getWhere("pastes", "url=" + url, "select=poster")[0][0]
+    
+    if loggedUser != pasteOwner: return index()
+        
+    if pasteType == "public": fixedPasteType = pasteType
+    if pasteType == "unlisted": fixedPasteType = pasteType
+    if pasteType == "private": fixedPasteType = pasteType
+    darkpaste.update("pastes", "url=" + url, "name,content,number,poster,type", title, content, 0, username, fixedPasteType)
+    darkpaste.save()  
+    
+    return index()
 
 @app.route('/create_paste', methods=['POST'])
 def create_paste():
@@ -167,4 +246,4 @@ def create_paste():
     return index()
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()

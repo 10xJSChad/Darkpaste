@@ -17,5 +17,14 @@
             <input type="button" onclick="location.href='/user/{{username}}';" value="Profile" />
             {% endif %}
             <input type="button" onclick="location.href='paste';" value="New Paste" />
+			
+			{% if (loggedIn == False) %}
+				<input type="button" onclick="location.href='login';" value="Log In" />
+				{% if (registrationEnabled == True) %}
+					<input type="button" onclick="location.href='register';" value="Register"/>
+				{% endif %}
+            {% endif %}
+			
     </center>
+
 </body>
