@@ -8,7 +8,8 @@ You can disable or enable the registration page in Config.py
 Make accounts with User Creation.py if registration is disabled.
 
 Darkpaste is made using Flask & [AnaDB](https://github.com/10xJSChad/AnaDB) for login/paste storage
-Use 'User Creation.py' to create new accounts. Login information is stored locally & not encrypted in any way.
+Use 'User Creation.py' to create new accounts. Login information is stored locally & is md5 hashed and salted, this is not very secure but it's better than nothing. The salt can be found & modified in Config.py
+
 
 ![alt text](https://i.imgur.com/0ZFI3yH.png)
 ![alt text](https://i.imgur.com/zLSJMFM.png)
