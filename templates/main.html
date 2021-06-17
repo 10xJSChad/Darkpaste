@@ -8,7 +8,7 @@
             <h1>Gamer Army Of Darkness</h1>
             <h2>Darkpaste by 10xJSChad</h2>
             {% for x in range(1, length) %}           
-            <a href="pastes/{{urls[-x][0]}}">{{titles[0][0][0:20] + " by " }}</a> <a href="user/{{posters[-x][0]}}">{{posters[-x][0]}}</a>
+            <a href="pastes/{{urls[-x][0]}}">{{titles[x-][0][0:20] + " by " }}</a> <a href="user/{{posters[-x][0]}}">{{posters[-x][0]}}</a>
 			<br> 
             {% endfor %}
             {% if (length > 0) %}
