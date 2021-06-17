@@ -207,7 +207,7 @@ def index():
 
 @app.route("/paste")
 def pastePage():
-    if not checkLogged(): return render_template('notlogged.html')
+    if not checkLogged(): return render_template('notlogged.html', registrationEnabled = Config.enableRegistration)
     return render_template('paste.html')
 
 @app.route('/update_paste', methods=['POST'])

@@ -7,5 +7,8 @@
         <h1>You are not logged in</h1>
         <input type="button" onclick="location.href='login';" value="Log in" />
 		<input type="button" onclick="location.href='/';" value="Go to index" />
+		{% if (registrationEnabled == True) %}
+			<input type="button" onclick="location.href='register';" value="Register"/>
+		{% endif %}
         </center>
 </body>
