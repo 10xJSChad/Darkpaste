@@ -65,7 +65,7 @@ def verifyLogin(username, password):
 @app.route('/handle_login', methods=['POST'])
 def handle_login():
     global darkpaste
-    username, password = request.values.get('user'), request.values.get('pass') 
+    username, password = request.values.get('user').lower(), request.values.get('pass') 
     if verifyLogin(username, password): 
      resp = make_response(render_template('success.html'))
      token = generateUrl()
