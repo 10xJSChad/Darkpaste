@@ -5,6 +5,7 @@ Darkpaste is made using [Flask](https://github.com/pallets/flask) & [AnaDB](http
 
 <h2>Features</h2>
 
+* Basic registration system
 * Post public, unlisted, or private pastes.
 * Edit or delete pastes at any time
 * Hashed & salted password storage
