@@ -11,10 +11,6 @@ import os
 app = Flask(__name__)
 darkpaste = AnaDatabase("Darkpaste")
 
-#darkpaste.create("users", ["user", "pass", "token", "ip"])
-#darkpaste.create("pastes", ["url", "name", "content", "number", "poster", "type"])
-#darkpaste.save()
-
 def resetDb():
  darkpaste.create("users", ["user", "pass", "token", "ip"])
  darkpaste.create("pastes", ["url", "name", "content", "number", "poster", "type"])
